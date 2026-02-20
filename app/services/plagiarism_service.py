@@ -61,10 +61,18 @@ def check_plagiarism(text: str) -> dict:
         if similarity > overall_max:
             overall_max = similarity
 
+        # Build a meaningful source label from the best matching snippet
+        if best_snippet and similarity > 10:
+            source_label = best_snippet[:120] + ("..." if len(best_snippet) > 120 else "")
+        elif snippets:
+            source_label = "Tidak ada sumber signifikan ditemukan"
+        else:
+            source_label = "Tidak ada hasil pencarian"
+
         results.append({
             "sentence": sentence,
             "similarity": similarity,
-            "source": "web" if snippets else "no results",
+            "source": source_label,
         })
 
     # Step 4 — Return aggregated response
