@@ -79,6 +79,11 @@ class PlagiarismRequest(BaseModel):
         description="The text to check for plagiarism.",
         json_schema_extra={"example": "Machine learning is a subset of artificial intelligence."},
     )
+    serper_api_key: str | None = Field(
+        default=None,
+        description="Optional Serper API key to use for this request.",
+        json_schema_extra={"example": "your-serper-api-key"},
+    )
 
 
 class SentenceResult(BaseModel):
@@ -110,7 +115,7 @@ async def check_plagiarism_endpoint(request: PlagiarismRequest):
     """
     try:
         logger.info("Received plagiarism check request (%d chars).", len(request.text))
-        result = check_plagiarism(request.text)
+        result = check_plagiarism(request.text, api_key=request.serper_api_key)
         return result
 
     except Exception as exc:

@@ -17,12 +17,13 @@ from app.services.similarity import compute_similarity
 logger = logging.getLogger(__name__)
 
 
-def check_plagiarism(text: str) -> dict:
+def check_plagiarism(text: str, api_key: str = None) -> dict:
     """
     Run the complete plagiarism detection pipeline on the given text.
 
     Args:
-        text: The full text to check for plagiarism.
+        text:    The full text to check for plagiarism.
+        api_key: Optional Serper API key to use.
 
     Returns:
         A dictionary with:
@@ -52,7 +53,8 @@ def check_plagiarism(text: str) -> dict:
         logger.info("Checking sentence: %.60s...", sentence)
 
         # Query Serper.dev for web snippets matching this sentence
-        snippets = search_google(sentence, num_results=3)
+        # Pass api_key if provided; serper_client will handle fallback behavior
+        snippets = search_google(sentence, num_results=3, api_key=api_key)
 
         # Compute TF-IDF cosine similarity against retrieved snippets
         similarity, best_snippet = compute_similarity(sentence, snippets)
