@@ -1,0 +1,20 @@
+# Environment variables (contains API keys)
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+
+# Virtual environment
+venv/
+.venv/
+
+# NLTK data
+nltk_data/
+
+# IDE
+.vscode/
+.idea/
