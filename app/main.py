@@ -21,6 +21,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
 from app.services.plagiarism_service import check_plagiarism
+from app.services.paraphrase_service import paraphrase_text # NEW: Paraphrase service
 
 # ---------------------------------------------------------------------------
 # Logging configuration — useful for debugging in development
@@ -99,6 +100,17 @@ class PlagiarismResponse(BaseModel):
     sentences: list[SentenceResult]
 
 
+class ParaphraseRequest(BaseModel):
+    """Input model for paraphrase generation."""
+    text: str = Field(..., min_length=1, description="Text to paraphrase.")
+    num_sequences: int = Field(default=3, le=5, description="Number of variations to generate.")
+
+class ParaphraseResponse(BaseModel):
+    """Paraphrase response model."""
+    original_text: str
+    paraphrased_texts: list[str]
+
+
 # ---------------------------------------------------------------------------
 # Endpoints
 # ---------------------------------------------------------------------------
@@ -120,6 +132,31 @@ async def check_plagiarism_endpoint(request: PlagiarismRequest):
 
     except Exception as exc:
         logger.exception("Unexpected error during plagiarism check.")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Internal server error: {str(exc)}",
+        ) from exc
+
+
+@app.post(
+    "/paraphrase",
+    response_model=ParaphraseResponse,
+    summary="Paraphrase text (Indonesian)",
+    description="Generates paraphrased versions of the input text using a T5 model.",
+)
+async def paraphrase_endpoint(request: ParaphraseRequest):
+    """
+    Paraphrase endpoint.
+    """
+    try:
+        logger.info("Received paraphrase request (%d chars).", len(request.text))
+        results = paraphrase_text(request.text, num_sequences=request.num_sequences)
+        return {
+            "original_text": request.text,
+            "paraphrased_texts": results
+        }
+    except Exception as exc:
+        logger.exception("Unexpected error during paraphrasing.")
         raise HTTPException(
             status_code=500,
             detail=f"Internal server error: {str(exc)}",

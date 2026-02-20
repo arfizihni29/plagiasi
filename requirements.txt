@@ -5,3 +5,7 @@ scikit-learn
 nltk
 python-dotenv
 duckduckgo-search
+torch
+transformers
+sentencepiece
+protobuf
