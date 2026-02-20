@@ -1,3 +1,12 @@
+---
+title: Plagiasi
+emoji: 🔍
+colorFrom: blue
+colorTo: purple
+sdk: docker
+app_port: 7860
+---
+
 # 🔍 Plagiarism Detection API
 
 A FastAPI-based plagiarism detection service that compares user-submitted text against web sources using **Google Search (Serper.dev)** and **TF-IDF cosine similarity**.
