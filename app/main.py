@@ -122,6 +122,20 @@ async def check_plagiarism_endpoint(request: PlagiarismRequest):
 
 
 # ---------------------------------------------------------------------------
+# Root endpoint — welcome page
+# ---------------------------------------------------------------------------
+@app.get("/", summary="Welcome")
+async def root():
+    """Welcome page with API info."""
+    return {
+        "message": "Plagiarism Detection API",
+        "version": "1.0.0",
+        "docs": "/docs",
+        "endpoint": "POST /check-plagiarism",
+    }
+
+
+# ---------------------------------------------------------------------------
 # Health-check endpoint
 # ---------------------------------------------------------------------------
 @app.get("/health", summary="Health check")
